@@ -585,6 +585,8 @@ impl<'a> EntryFields<'a> {
                 }
                 if self.preserve_mtime {
                     if let Some(mtime) = get_mtime(&self.header) {
+                        // The replacement, `std::fs::set_times_nofollow`, needs Rust 1.99.
+                        #[allow(deprecated)]
                         filetime::set_symlink_file_times(dst, mtime, mtime).map_err(|e| {
                             TarError::new(format!("failed to set mtime for `{}`", dst.display()), e)
                         })?;
@@ -692,6 +694,8 @@ impl<'a> EntryFields<'a> {
 
         if self.preserve_mtime {
             if let Some(mtime) = get_mtime(&self.header) {
+                // The replacement, `std::fs::File::set_times`, needs Rust 1.75.
+                #[allow(deprecated)]
                 filetime::set_file_handle_times(&f, Some(mtime), Some(mtime)).map_err(|e| {
                     TarError::new(format!("failed to set mtime for `{}`", dst.display()), e)
                 })?;
