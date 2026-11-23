@@ -914,8 +914,8 @@ fn file_times() {
     ar.unpack(td.path()).unwrap();
 
     let meta = fs::metadata(td.path().join("a")).unwrap();
-    let mtime = FileTime::from_last_modification_time(&meta);
-    let atime = FileTime::from_last_access_time(&meta);
+    let mtime = FileTime::from_system_time(meta.modified().unwrap());
+    let atime = FileTime::from_system_time(meta.accessed().unwrap());
     assert_eq!(mtime.unix_seconds(), 1000000000);
     assert_eq!(mtime.nanoseconds(), 0);
     assert_eq!(atime.unix_seconds(), 1000000000);
@@ -937,8 +937,8 @@ fn zero_file_times() {
     assert!(ar.unpack(td.path()).is_ok());
 
     let meta = fs::metadata(td.path().join("a")).unwrap();
-    let mtime = FileTime::from_last_modification_time(&meta);
-    let atime = FileTime::from_last_access_time(&meta);
+    let mtime = FileTime::from_system_time(meta.modified().unwrap());
+    let atime = FileTime::from_system_time(meta.accessed().unwrap());
     assert!(mtime.unix_seconds() != 0);
     assert!(atime.unix_seconds() != 0);
 }
@@ -1047,7 +1047,7 @@ fn unpack_links() {
     let md = fs::symlink_metadata(td.path().join("lnk")).unwrap();
     assert!(md.file_type().is_symlink());
 
-    let mtime = FileTime::from_last_modification_time(&md);
+    let mtime = FileTime::from_system_time(md.modified().unwrap());
     assert_eq!(mtime.unix_seconds(), 1448291033);
 
     assert_eq!(

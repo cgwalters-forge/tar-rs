@@ -18,7 +18,9 @@ const REVDEPS: &[RevDep] = &[
     RevDep {
         name: "cargo-vendor-filterer",
         repo: "https://github.com/coreos/cargo-vendor-filterer.git",
-        rev: "v0.5.18",
+        // Uses CARGO_BIN_EXE to find the test binary under Cargo 1.100's new
+        // build layout. Return to a tag when a release includes this fix.
+        rev: "93e0701e1bb1feaca832edfaae87c1c0cb15d2d3",
         toolchain: None,
     },
     RevDep {
